@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}{{ player.username }} Match History{% endblock %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-title">{{ player.username }}</div>
+
+        <div class="section-title">
+            Match History
+        </div>
+        <div class="section-subtitle helper-text">
+            Per-game goals, assists, and saves.
+        </div>
+
+        <div class="stats-table-wrapper">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th>Played</th>
+                    <th>Home Team</th>
+                    <th>Away Team</th>
+                    <th>Score</th>
+                    <th>Goals</th>
+                    <th>Assists</th>
+                    <th>Saves</th>
+                    {% if user.is_staff %}
+                        <th>Wins</th>
+                        <th>Losses</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in rows %}
+                    <tr class="{% if row.is_win %}stats-row-win{% endif %}">
+                        <td class="stats-time">
+                            {{ row.match.created|date:"M j, Y, P" }}
+                        </td>
+                        <td>
+                            {% for name in row.home_players %}
+                                {{ name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for name in row.away_players %}
+                                {{ name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{ row.home_goals }} – {{ row.away_goals }}
+                        </td>
+                        <td>{{ row.goals }}</td>
+                        <td>{{ row.assists }}</td>
+                        <td>{{ row.saves }}</td>
+                        {% if user.is_staff %}
+                            <td>{{ row.wins }}</td>
+                            <td>{{ row.losses }}</td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">
+                            No matches found for this player.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

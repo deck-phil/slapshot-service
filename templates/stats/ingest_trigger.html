@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Run Ingest{% endblock %}
+
+{% block content %}
+  <div class="page-wrapper">
+    <div class="page-title">MANUAL INGEST</div>
+
+    {% if messages %}
+      <ul class="helper-text">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="section-title">Run now</div>
+    <div class="section-subtitle helper-text">
+      Click the button below to fetch and ingest matches for all whitelisted players.
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn-primary">
+        Run ingest
+      </button>
+    </form>
+  </div>
+{% endblock %}

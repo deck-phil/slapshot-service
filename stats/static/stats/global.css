@@ -1,0 +1,146 @@
+/* Global layout */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background-color: #0c3b66;       /* deep blue */
+  color: #e5f3ff;                  /* light blue/white */
+}
+
+/* Centered content column */
+.page-wrapper {
+  max-width: 960px;
+  margin: 40px auto 80px auto;
+  padding: 0 24px;
+}
+
+/* Header / player name */
+.page-title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.8),
+               0 0 30px rgba(255, 255, 255, 0.5);
+  margin-bottom: 32px;
+}
+
+/* Section title + subtitle */
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: #c1d8f2;
+  margin-bottom: 24px;
+}
+
+/* Table container */
+.stats-table-wrapper {
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: #10497c; /* header row bg */
+}
+
+/* Base table */
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* Header row */
+.stats-table thead {
+  background-color: #10497c;
+}
+
+.stats-table thead th {
+  padding: 12px 20px;
+  font-weight: 600;
+  text-align: left;
+  color: #e5f3ff;
+}
+
+/* Body rows */
+.stats-table tbody tr {
+  background-color: #0e416f;
+}
+
+.stats-table tbody tr:nth-child(even) {
+  background-color: #0d3b66;
+}
+
+.stats-table tbody td {
+  padding: 10px 20px;
+  color: #d7e7ff;
+}
+
+/* Links inside table (match ids / JSON links) */
+.stats-table a {
+  color: #ffffff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.stats-table a:hover {
+  border-bottom-color: rgba(255, 255, 255, 1);
+}
+
+/* “Time ago” column style */
+.stats-time {
+  color: #f9fafb;
+}
+
+/* Small top note text (e.g. “Displaying the last 10 matches…”) */
+.helper-text {
+  font-size: 13px;
+  color: #c1d8f2;
+  margin-bottom: 12px;
+}
+
+/* Optional: tighten table at larger screens */
+@media (min-width: 1200px) {
+  .page-wrapper {
+    max-width: 1024px;
+  }
+}
+
+.stats-table tr.stats-row-win {
+  background-color: rgba(0, 255, 0, 0.1) !important;
+}
+
+/* Primary action button */
+.btn-primary {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 4px;
+  border: none;
+  background-color: #1ea7ff;           /* bright blue */
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+.btn-primary:hover {
+  background-color: #1590dd;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  background-color: #0f79b9;
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

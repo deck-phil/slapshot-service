@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Player Totals{% endblock %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-title">GOON LAGOON</div>
+
+        <div class="section-title">All-time stats</div>
+        <div class="section-subtitle helper-text">
+            Aggregated across all ingested matches for whitelisted players.
+        </div>
+
+        <div class="stats-table-wrapper">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th>Player</th>
+                    <th class="text-end">Games</th>
+                    <th class="text-end">Wins</th>
+                    <th class="text-end">Losses</th>
+                    <th class="text-end">Goals</th>
+                    <th class="text-end">Assists</th>
+                    <th class="text-end">Saves</th>
+                    <th class="text-end">Goals/Game</th>
+                    <th class="text-end">Win %</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for p in players %}
+                    <tr>
+                        <td><a href="{% url "player_match_history" p.player_id %}">{{ p.player_username }}</a></td>
+                        <td class="text-end">{{ p.total_games }}</td>
+                        <td class="text-end">{{ p.total_wins }}</td>
+                        <td class="text-end">{{ p.total_losses }}</td>
+                        <td class="text-end">{{ p.total_goals }}</td>
+                        <td class="text-end">{{ p.total_assists }}</td>
+                        <td class="text-end">{{ p.total_saves }}</td>
+                        <td class="text-end">{{ p.goals_per_game|floatformat:2 }}</td>
+                        <td class="text-end">{{ p.win_pct|floatformat:1 }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center">
+                            No stats available yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="helper-text" style="margin-top: 12px;">
+            <a href="{% url 'match_history' %}" style="color: #ffffff;">
+                View recent match history
+            </a>
+        </div>
+    </div>
+{% endblock %}
