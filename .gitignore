@@ -5,6 +5,7 @@
 .venv/
 static/
 !stats/static/
+staticfiles/
 *.log
 *.sqlite3
 .env
