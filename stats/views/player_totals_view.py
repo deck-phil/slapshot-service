@@ -9,12 +9,11 @@ def player_totals_view(request):
         PlayerMatchStats.objects
         .values("player_id", "player__game_user_id", "player__username")
         .annotate(
-            total_wins=Sum("wins"),
-            total_losses=Sum("losses"),
+            sum_wins=Sum("wins"),
+            sum_losses=Sum("losses"),
             total_goals=Sum("goals"),
             total_assists=Sum("assists"),
             total_saves=Sum("saves"),
-            # count distinct matches per player
             total_games=Count("match", distinct=True),
         )
         .order_by("-total_games")
@@ -23,23 +22,31 @@ def player_totals_view(request):
     players = []
     for row in qs:
         games = row["total_games"] or 0
-        wins = row["total_wins"] or 0
+
+        raw_wins = row["sum_wins"] or 0
+        raw_losses = row["sum_losses"] or 0
+
+        # Each game must be win or loss. Any game not counted as a win is a loss.
+        total_wins = raw_wins
+        total_losses = max(games - total_wins, raw_losses)
+
         goals = row["total_goals"] or 0
 
         if games > 0:
             goals_per_game = goals / games
-            win_pct = (wins / games) * 100
+            win_pct = (total_wins / games) * 100
         else:
             goals_per_game = 0.0
             win_pct = 0.0
 
         players.append(
             {
-                "player_id": row["player__game_user_id"],
+                "player_pk": row["player_id"],
+                "player_game_user_id": row["player__game_user_id"],
                 "player_username": row["player__username"],
                 "total_games": games,
-                "total_wins": wins,
-                "total_losses": row["total_losses"] or 0,
+                "total_wins": total_wins,
+                "total_losses": total_losses,
                 "total_goals": goals,
                 "total_assists": row["total_assists"] or 0,
                 "total_saves": row["total_saves"] or 0,
