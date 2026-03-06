@@ -12,8 +12,10 @@ def player_totals_view(request):
             sum_wins=Sum("wins"),
             sum_losses=Sum("losses"),
             total_goals=Sum("goals"),
+            total_shots=Sum("shots"),
             total_assists=Sum("assists"),
             total_saves=Sum("saves"),
+            total_score=Sum("score", distinct=True),
             total_games=Count("match", distinct=True),
         )
         .order_by("-total_games")
@@ -31,12 +33,15 @@ def player_totals_view(request):
         total_losses = max(games - total_wins, raw_losses)
 
         goals = row["total_goals"] or 0
+        total_score = row["total_score"] or 0
 
         if games > 0:
             goals_per_game = goals / games
+            score_per_game = total_score / games
             win_pct = (total_wins / games) * 100
         else:
             goals_per_game = 0.0
+            score_per_game = 0.0
             win_pct = 0.0
 
         players.append(
@@ -48,9 +53,11 @@ def player_totals_view(request):
                 "total_wins": total_wins,
                 "total_losses": total_losses,
                 "total_goals": goals,
+                "total_shots": row["total_shots"] or 0,
                 "total_assists": row["total_assists"] or 0,
                 "total_saves": row["total_saves"] or 0,
                 "goals_per_game": goals_per_game,
+                "score_per_game": score_per_game,
                 "win_pct": win_pct,
             }
         )

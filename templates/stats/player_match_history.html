@@ -21,7 +21,9 @@
                     <th>Home Team</th>
                     <th>Away Team</th>
                     <th>Score</th>
+                    <th>Points</th>
                     <th>Goals</th>
+                    <th>Shots</th>
                     <th>Assists</th>
                     <th>Saves</th>
                     {% if user.is_staff %}
@@ -49,7 +51,9 @@
                         <td>
                             {{ row.home_goals }} – {{ row.away_goals }}
                         </td>
+                        <td>{{ row.score }}</td>
                         <td>{{ row.goals }}</td>
+                        <td>{{ row.shots }}</td>
                         <td>{{ row.assists }}</td>
                         <td>{{ row.saves }}</td>
                         {% if user.is_staff %}

@@ -20,9 +20,11 @@
                     <th class="text-end">Wins</th>
                     <th class="text-end">Losses</th>
                     <th class="text-end">Goals</th>
+                    <th class="text-end">Shots</th>
                     <th class="text-end">Assists</th>
                     <th class="text-end">Saves</th>
                     <th class="text-end">Goals/Game</th>
+                    <th class="text-end">Pts/Game</th>
                     <th class="text-end">Win %</th>
                 </tr>
                 </thead>
@@ -34,9 +36,11 @@
                         <td class="text-end">{{ p.total_wins }}</td>
                         <td class="text-end">{{ p.total_losses }}</td>
                         <td class="text-end">{{ p.total_goals }}</td>
+                        <td class="text-end">{{ p.total_shots }}</td>
                         <td class="text-end">{{ p.total_assists }}</td>
                         <td class="text-end">{{ p.total_saves }}</td>
                         <td class="text-end">{{ p.goals_per_game|floatformat:2 }}</td>
+                        <td class="text-end">{{ p.score_per_game|floatformat:2 }}</td>
                         <td class="text-end">{{ p.win_pct|floatformat:1 }}</td>
                     </tr>
                 {% empty %}
