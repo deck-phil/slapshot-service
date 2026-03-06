@@ -1,20 +1,15 @@
 from django.db import models
 
 
-class WhitelistedPlayer(models.Model):
+class Player(models.Model):
+    username = models.CharField(max_length=50)
     game_user_id = models.CharField(max_length=50, unique=True)
-    username_hint = models.CharField(
-        max_length=50,
-        blank=True,
-        help_text="Optional label so you remember who this is",
-    )
-
-    def __str__(self):
-        return self.username_hint or self.game_user_id
 
     class Meta:
-        verbose_name = "Whitelisted Player"
-        verbose_name_plural = "Whitelisted Players"
+        unique_together = ("username", "game_user_id")
+
+    def __str__(self):
+        return f"{self.username}"
 
 
 class Match(models.Model):
@@ -36,17 +31,6 @@ class Match(models.Model):
 
     def __str__(self):
         return f"{self.match_id}"
-
-
-class Player(models.Model):
-    username = models.CharField(max_length=50)
-    game_user_id = models.CharField(max_length=50, unique=True)
-
-    class Meta:
-        unique_together = ("username", "game_user_id")
-
-    def __str__(self):
-        return f"{self.username}"
 
 
 class PlayerMatchStats(models.Model):

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from stats.ingest import ingest_all_whitelisted_players
+from stats.ingest import ingest_all_players
 
 
 def staff_check(user):
@@ -14,7 +14,7 @@ def staff_check(user):
 @user_passes_test(staff_check)
 def ingest_trigger_view(request):
     if request.method == "POST":
-        ingest_all_whitelisted_players()
+        ingest_all_players()
         messages.success(request, "Ingest completed.")
         return redirect(reverse("ingest_trigger"))
 

@@ -1,13 +1,6 @@
 # stats/admin.py
 from django.contrib import admin
-from .models import WhitelistedPlayer, Match, Player, PlayerMatchStats
-
-
-@admin.register(WhitelistedPlayer)
-class WhitelistedPlayerAdmin(admin.ModelAdmin):
-    list_display = ("username_hint", "game_user_id")
-    search_fields = ("username_hint", "game_user_id")
-    ordering = ("-game_user_id",)
+from .models import Match, Player, PlayerMatchStats
 
 
 @admin.register(Match)

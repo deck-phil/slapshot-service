@@ -3,32 +3,32 @@ from uuid import UUID
 
 from django.utils.dateparse import parse_datetime
 
-from .models import Match, Player, PlayerMatchStats, WhitelistedPlayer
+from .models import Match, Player, PlayerMatchStats
 
 
 SLAPSHOT_BASE_URL = "https://slapshot.gg/api/game/players"
 
 
-def ingest_all_whitelisted_players(limit: int | None = None) -> None:
+def ingest_all_players(limit: int | None = None) -> None:
     """
-    Loop over WhitelistedPlayer rows and ingest each one.
+    Loop over Player rows and ingest each one.
     """
-    qs = WhitelistedPlayer.objects.order_by("game_user_id")
+    qs = Player.objects.order_by("game_user_id")
     if limit is not None:
         qs = qs[:limit]
 
     total = qs.count()
-    print(f"[all] Found {total} whitelisted players")
+    print(f"[all] Found {total} players")
 
-    for idx, wp in enumerate(qs, start=1):
-        label = wp.username_hint or ""
-        print(f"[all] [{idx}/{total}] Ingesting {label} ({wp.game_user_id})")
+    for idx, player in enumerate(qs, start=1):
+        label = player.username or ""
+        print(f"[all] [{idx}/{total}] Ingesting {label} ({player.game_user_id})")
         try:
-            ingest_player_by_id(wp.game_user_id)
+            ingest_player_by_id(player.game_user_id)
         except Exception as e:
-            print(f"[all][ERROR] Error ingesting {wp.game_user_id}: {e}")
+            print(f"[all][ERROR] Error ingesting {player.game_user_id}: {e}")
 
-    print("[all] Done ingesting all whitelisted players")
+    print("[all] Done ingesting all players")
 
 
 def ingest_player_by_id(game_user_id: str) -> None:
@@ -58,7 +58,7 @@ def get_whitelisted_ids() -> set[str]:
     """
     Load all whitelisted game_user_id values from the database.
     """
-    ids = set(WhitelistedPlayer.objects.values_list("game_user_id", flat=True))
+    ids = set(Player.objects.values_list("game_user_id", flat=True))
     return ids
 
 
@@ -184,7 +184,6 @@ def ingest_match(match_data: dict) -> Match:
 
     players = game_stats.get("players") or []
     created_stats = 0
-    created_players = 0
 
     for player_data in players:
         player_obj, player_created = Player.objects.get_or_create(
@@ -193,9 +192,6 @@ def ingest_match(match_data: dict) -> Match:
                 "username": player_data.get("username", ""),
             },
         )
-
-        if player_created:
-            created_players += 1
 
         stats = player_data.get("stats") or {}
 
@@ -238,8 +234,7 @@ def ingest_match(match_data: dict) -> Match:
 
     print(
         f"[ingest] For match {match_id}: "
-        f"created {created_stats} PlayerMatchStats rows, "
-        f"{created_players} new Player rows"
+        f"created {created_stats} PlayerMatchStats rows"
     )
 
     return match
