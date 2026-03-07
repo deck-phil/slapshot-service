@@ -2,8 +2,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.utils import timezone
 
 from stats.ingest import ingest_all_players
+from stats.models import IngestionRun
 
 
 def staff_check(user):
@@ -14,7 +16,21 @@ def staff_check(user):
 @user_passes_test(staff_check)
 def ingest_trigger_view(request):
     if request.method == "POST":
-        ingest_all_players()
+
+        ingestion_run = IngestionRun.objects.create(
+            ingestion_type=IngestionRun.IngestionType.ALL_PLAYERS,
+        )
+
+        try:
+            matches_added = ingest_all_players()
+            ingestion_run.matches_added = matches_added
+        except Exception as exc:
+            ingestion_run.error_message = str(exc)
+            raise
+        finally:
+            ingestion_run.finished_at = timezone.now()
+            ingestion_run.save(update_fields=["matches_added", "error_message", "finished_at"])
+
         messages.success(request, "Ingest completed.")
         return redirect(reverse("ingest_trigger"))
 

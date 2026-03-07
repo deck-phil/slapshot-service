@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 
 class Player(models.Model):
@@ -80,3 +81,58 @@ class PlayerMatchStats(models.Model):
         return f"{self.player} @ {self.match} ({self.team})"
 
 
+class IngestionRun(models.Model):
+    class IngestionType(models.TextChoices):
+        ALL_PLAYERS = "ALL_PLAYERS", "All Players"
+        SINGLE_PLAYER = "SINGLE_PLAYER", "Single Player"
+
+    ingestion_type = models.CharField(
+        max_length=20,
+        choices=IngestionType.choices,
+        default=IngestionType.ALL_PLAYERS,
+    )
+
+    # Only set when type == SINGLE_PLAYER
+    player = models.ForeignKey(
+        Player,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="ingestion_runs",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
+    matches_added = models.IntegerField(default=0)
+    error_message = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        constraints = [
+            models.CheckConstraint(
+                name="player_required_for_single_player",
+                check=(
+                        Q(ingestion_type="ALL_PLAYERS", player__isnull=True)
+                        |
+                        Q(ingestion_type="SINGLE_PLAYER", player__isnull=False)
+                ),
+            ),
+        ]
+
+    @classmethod
+    def last_successful_run(cls):
+        """
+        Return the most recent IngestionRun that completed without an error.
+        """
+        return (
+            cls.objects
+            .filter(error_message="")
+            .order_by("-created_at")
+            .first()
+        )
+
+    def __str__(self):
+        base = f"{self.ingestion_type}"
+        if self.player_id:
+            base += f" for {self.player}"
+        return f"{base} at {self.created_at:%Y-%m-%d %H:%M:%S}"

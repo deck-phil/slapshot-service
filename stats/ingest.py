@@ -5,14 +5,10 @@ from django.utils.dateparse import parse_datetime
 
 from .models import Match, Player, PlayerMatchStats
 
-
 SLAPSHOT_BASE_URL = "https://slapshot.gg/api/game/players"
 
 
-def ingest_all_players(limit: int | None = None) -> None:
-    """
-    Loop over Player rows and ingest each one.
-    """
+def ingest_all_players(limit: int | None = None) -> int:
     qs = Player.objects.order_by("game_user_id")
     if limit is not None:
         qs = qs[:limit]
@@ -20,25 +16,33 @@ def ingest_all_players(limit: int | None = None) -> None:
     total = qs.count()
     print(f"[all] Found {total} players")
 
+    total_new_matches = 0
+
     for idx, player in enumerate(qs, start=1):
         label = player.username or ""
         print(f"[all] [{idx}/{total}] Ingesting {label} ({player.game_user_id})")
         try:
-            ingest_player_by_id(player.game_user_id)
+            count = ingest_player_by_id(player.game_user_id)
+            total_new_matches += count
         except Exception as e:
             print(f"[all][ERROR] Error ingesting {player.game_user_id}: {e}")
 
-    print("[all] Done ingesting all players")
+    print(
+        f"[all] Done ingesting all players. "
+        f"Total *new* matches inserted: {total_new_matches}"
+    )
+    return total_new_matches
 
 
-def ingest_player_by_id(game_user_id: str) -> None:
-    """
-    High-level helper: fetch JSON from Slapshot API and ingest all whitelisted matches.
-    """
+def ingest_player_by_id(game_user_id: str) -> int:
     print(f"[ingest] === Ingest run started for game_user_id={game_user_id} ===")
     payload = fetch_player_json(game_user_id)
-    ingest_payload(payload)
-    print(f"[ingest] === Ingest run finished for game_user_id={game_user_id} ===")
+    new_matches = ingest_payload(payload)
+    print(
+        f"[ingest] === Ingest run finished for game_user_id={game_user_id} "
+        f"(new matches: {new_matches}) ==="
+    )
+    return new_matches
 
 
 def fetch_player_json(game_user_id: str) -> dict:
@@ -89,15 +93,17 @@ def match_all_players_whitelisted(match_data: dict, whitelist_ids: set[str]) -> 
     )
 
 
-def ingest_payload(payload: dict) -> None:
+def ingest_payload(payload: dict) -> int:
     """
     Given the full JSON payload from the Slapshot API for one player,
     iterate over match_history and ingest only matches that pass the
     whitelist check.
+
+    Returns the number of *new* Match rows inserted.
     """
     match_history = payload.get("match_history", [])
     total_matches = len(match_history)
-    ingested_matches = 0
+    new_matches = 0
     skipped_whitelist = 0
     skipped_no_stats = 0
 
@@ -126,22 +132,27 @@ def ingest_payload(payload: dict) -> None:
             )
             continue
 
-        ingest_match(match_data)
-        ingested_matches += 1
+        _, created = ingest_match(match_data)
+        if created:
+            new_matches += 1
 
     print(
         f"[ingest] Done. "
         f"Total: {total_matches}, "
-        f"Ingested: {ingested_matches}, "
+        f"New matches inserted: {new_matches}, "
         f"Skipped (whitelist): {skipped_whitelist}, "
         f"Skipped (no stats): {skipped_no_stats}"
     )
 
+    return new_matches
 
-def ingest_match(match_data: dict) -> Match:
+
+def ingest_match(match_data: dict) -> tuple[Match, bool]:
     """
     Create or update a Match row and associated Player + PlayerMatchStats rows
     for one match JSON object.
+
+    Returns (match, created) where created is True only if the Match row was newly inserted.
     """
     game_stats = match_data.get("game_stats") or {}
     score = game_stats.get("score") or {}
@@ -170,7 +181,7 @@ def ingest_match(match_data: dict) -> Match:
             "periods_enabled": str(
                 game_stats.get("periods_enabled", match_data.get("periods_enabled", "False"))
             ).lower()
-            == "true",
+                               == "true",
             "custom_mercy_rule": int(
                 game_stats.get("custom_mercy_rule", match_data.get("custom_mercy_rule", "0")) or 0
             ),
@@ -237,5 +248,4 @@ def ingest_match(match_data: dict) -> Match:
         f"created {created_stats} PlayerMatchStats rows"
     )
 
-    return match
-
+    return match, created

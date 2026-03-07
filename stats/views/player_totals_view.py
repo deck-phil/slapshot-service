@@ -1,7 +1,7 @@
 from django.db.models import Sum, Count
 from django.shortcuts import render
 
-from stats.models import PlayerMatchStats
+from stats.models import PlayerMatchStats, IngestionRun
 
 
 def player_totals_view(request):
@@ -62,4 +62,7 @@ def player_totals_view(request):
             }
         )
 
-    return render(request, "stats/player_totals.html", {"players": players})
+    last_ingestion = IngestionRun.last_successful_run()
+
+    return render(request, "stats/player_totals.html", {"last_ingestion": last_ingestion,
+                                                        "players": players})
