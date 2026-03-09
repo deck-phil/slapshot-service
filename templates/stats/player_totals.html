@@ -16,26 +16,27 @@
         </div>
 
         <div class="stats-table-wrapper">
-            <table class="stats-table">
+            <table class="stats-table js-sortable">
                 <thead>
                 <tr>
-                    <th>Player</th>
-                    <th class="text-end">Games</th>
-                    <th class="text-end">Wins</th>
-                    <th class="text-end">Losses</th>
-                    <th class="text-end">Goals</th>
-                    <th class="text-end">Shots</th>
-                    <th class="text-end">Assists</th>
-                    <th class="text-end">Saves</th>
-                    <th class="text-end">Goals/Game</th>
-                    <th class="text-end">Pts/Game</th>
-                    <th class="text-end">Win %</th>
+                    <th data-sort-disabled>Player</th>
+                    <th class="text-end" data-type="number" data-default-sort="desc">Games</th>
+                    <th class="text-end" data-type="number">Wins</th>
+                    <th class="text-end" data-type="number">Losses</th>
+                    <th class="text-end" data-type="number">Goals</th>
+                    <th class="text-end" data-type="number">Shots</th>
+                    <th class="text-end" data-type="number">Assists</th>
+                    <th class="text-end" data-type="number">Saves</th>
+                    <th class="text-end" data-type="number">Goals/Game</th>
+                    <th class="text-end" data-type="number">Pts/Game</th>
+                    <th class="text-end" data-type="number">Win %</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for p in players %}
                     <tr>
-                        <td><a href="{% url "player_match_history" p.player_game_user_id %}">{{ p.player_username }}</a></td>
+                        <td><a href="{% url "player_match_history" p.player_game_user_id %}">{{ p.player_username }}</a>
+                        </td>
                         <td class="text-end">{{ p.total_games }}</td>
                         <td class="text-end">{{ p.total_wins }}</td>
                         <td class="text-end">{{ p.total_losses }}</td>

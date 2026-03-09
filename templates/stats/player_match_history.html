@@ -14,28 +14,29 @@
         </div>
 
         <div class="stats-table-wrapper">
-            <table class="stats-table">
+            <table class="stats-table js-sortable">
                 <thead>
                 <tr>
-                    <th>Played</th>
-                    <th>Home Team</th>
-                    <th>Away Team</th>
-                    <th>Score</th>
-                    <th>Points</th>
-                    <th>Goals</th>
-                    <th>Shots</th>
-                    <th>Assists</th>
-                    <th>Saves</th>
+                    <th class="sortable" data-type="date" data-default-sort="desc">Played</th>
+                    <th data-sort-disabled>Home Team</th>
+                    <th data-sort-disabled>Away Team</th>
+                    <th class="sortable" data-type="string">Score</th>
+                    <th class="sortable" data-type="number">Points</th>
+                    <th class="sortable" data-type="number">Goals</th>
+                    <th class="sortable" data-type="number">Shots</th>
+                    <th class="sortable" data-type="number">Assists</th>
+                    <th class="sortable" data-type="number">Saves</th>
                     {% if user.is_staff %}
-                        <th>Wins</th>
-                        <th>Losses</th>
+                        <th class="sortable" data-type="number">Wins</th>
+                        <th class="sortable" data-type="number">Losses</th>
                     {% endif %}
                 </tr>
                 </thead>
                 <tbody>
                 {% for row in rows %}
                     <tr class="{% if row.is_win %}stats-row-win{% endif %}">
-                        <td class="stats-time">
+                        <td class="stats-time"
+                            data-timestamp="{{ row.match.created|date:'U' }}000">
                             {{ row.match.created|date:"M j, Y, P" }}
                         </td>
                         <td>

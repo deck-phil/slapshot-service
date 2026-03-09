@@ -35,6 +35,9 @@ def match_history_view(request):
                 away_players.append(entry)
                 away_goals += entry["goals"]
 
+        home_players = sorted(home_players, key=lambda p: p["name"].lower())
+        away_players = sorted(away_players, key=lambda p: p["name"].lower())
+
         match_rows.append(
             {
                 "match": match,

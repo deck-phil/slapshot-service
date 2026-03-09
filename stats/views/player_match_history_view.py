@@ -34,6 +34,9 @@ def player_match_history_view(request, game_user_id):
                 away_players.append(name)
                 away_goals += s.goals or 0
 
+        home_players = sorted(home_players, key=str.lower)
+        away_players = sorted(away_players, key=str.lower)
+
         rows.append(
             {
                 "match": match,

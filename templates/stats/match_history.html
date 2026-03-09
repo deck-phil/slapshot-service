@@ -3,53 +3,54 @@
 {% block title %}Match History{% endblock %}
 
 {% block content %}
-  <div class="page-wrapper">
-    <div class="page-title">Match History</div>
+    <div class="page-wrapper">
+        <div class="page-title">Match History</div>
 
-    <div class="section-title">Last 50 Games</div>
-    <div class="section-subtitle helper-text">
-      Displaying the latest matches ingested.
-    </div>
+        <div class="section-title">Last 50 Games</div>
+        <div class="section-subtitle helper-text">
+            Displaying the latest matches ingested.
+        </div>
 
-    <div class="stats-table-wrapper">
-      <table class="stats-table">
-        <thead>
-          <tr>
-            <th>Played</th>
-            <th>Home Team</th>
-            <th>Away Team</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in match_rows %}
-            <tr>
-              <td class="stats-time">
-                {{ row.match.created|date:"M j, Y, P" }}
-              </td>
-              <td>
-                {% for p in row.home_players %}
-                  {{ p.name }}{% if not forloop.last %}, {% endif %}
+        <div class="stats-table-wrapper">
+            <table class="stats-table js-sortable">
+                <thead>
+                <tr>
+                    <th data-type="date" data-default-sort="desc">Played</th>
+                    <th data-sort-disabled>Home Team</th>
+                    <th data-sort-disabled>Away Team</th>
+                    <th data-type="string">Score</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for row in match_rows %}
+                    <tr>
+                        <td class="stats-time"
+                            data-timestamp="{{ row.match.created|date:'U' }}000">
+                            {{ row.match.created|date:"M j, Y, P" }}
+                        </td>
+                        <td>
+                            {% for p in row.home_players %}
+                                {{ p.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for p in row.away_players %}
+                                {{ p.name }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {{ row.home_goals }} – {{ row.away_goals }}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            No matches ingested yet.
+                        </td>
+                    </tr>
                 {% endfor %}
-              </td>
-              <td>
-                {% for p in row.away_players %}
-                  {{ p.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-              </td>
-              <td>
-                {{ row.home_goals }} – {{ row.away_goals }}
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="4" class="text-center">
-                No matches ingested yet.
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 {% endblock %}

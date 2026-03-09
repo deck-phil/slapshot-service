@@ -3,11 +3,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{% block title %}Stats{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'stats/global.css' %}">
-  {% block extra_head %}{% endblock %}
+    <title>{% block title %}Stats{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'stats/global.css' %}">
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-  {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 </body>
+<script>
+    (function () {
+        function parseCell(text, type, cellEl) {
+            text = text.trim();
+            if (type === 'number') {
+                var n = parseFloat(text.replace(/[^\d.-]/g, ''));
+                return isNaN(n) ? 0 : n;
+            }
+            if (type === 'date') {
+                const tsAttr = cellEl?.getAttribute('data-timestamp');
+                if (!tsAttr) return 0;
+                const n = Number(tsAttr);
+                return isNaN(n) ? 0 : n;
+            }
+
+            return text.toLowerCase();
+        }
+
+        function sortTable(tbody, columnIndex, type, asc) {
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort(function (a, b) {
+                const aCell = a.children[columnIndex];
+                const bCell = b.children[columnIndex];
+
+                const aText = aCell ? aCell.textContent : '';
+                const bText = bCell ? bCell.textContent : '';
+
+                const aVal = parseCell(aText, type, aCell);
+                const bVal = parseCell(bText, type, bCell);
+
+                if (aVal < bVal) return asc ? -1 : 1;
+                if (aVal > bVal) return asc ? 1 : -1;
+                return 0;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('table.js-sortable').forEach(function (table) {
+                const tbody = table.querySelector('tbody');
+                if (!tbody) return;
+
+                const headers = table.querySelectorAll('thead th');
+
+                headers.forEach(function (th, index) {
+                    if (th.hasAttribute('data-sort-disabled')) return;
+
+                    th.classList.add('sortable');
+                    th.setAttribute('aria-sort', 'none');
+                    th.dataset.sortDir = 'none';
+
+                    th.addEventListener('click', function () {
+                        const type = th.getAttribute('data-type') || 'string';
+
+                        // reset other headers
+                        headers.forEach(function (otherTh) {
+                            if (otherTh === th) return;
+                            otherTh.dataset.sortDir = 'none';
+                            otherTh.classList.remove('sort-asc', 'sort-desc');
+                            otherTh.setAttribute('aria-sort', 'none');
+                        });
+
+                        // toggle dir
+                        const current = th.dataset.sortDir;
+                        const asc = current !== 'asc';
+
+                        th.dataset.sortDir = asc ? 'asc' : 'desc';
+                        th.classList.toggle('sort-asc', asc);
+                        th.classList.toggle('sort-desc', !asc);
+                        th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+
+                        sortTable(tbody, index, type, asc);
+                    });
+                });
+
+                const defaultTh = table.querySelector('thead th[data-default-sort]');
+                if (defaultTh) {
+                    const index = Array.prototype.indexOf.call(headers, defaultTh);
+                    const type = defaultTh.getAttribute('data-type') || 'string';
+                    const dirAttr = defaultTh.getAttribute('data-default-sort') || 'asc';
+                    const asc = dirAttr !== 'desc';
+
+                    // set initial state classes/aria
+                    headers.forEach(function (otherTh) {
+                        otherTh.dataset.sortDir = 'none';
+                        otherTh.classList.remove('sort-asc', 'sort-desc');
+                        otherTh.setAttribute('aria-sort', 'none');
+                    });
+
+                    defaultTh.dataset.sortDir = asc ? 'asc' : 'desc';
+                    defaultTh.classList.add(asc ? 'sort-asc' : 'sort-desc');
+                    defaultTh.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+
+                    sortTable(tbody, index, type, asc);
+                }
+            });
+        });
+    })();
+</script>
 </html>
