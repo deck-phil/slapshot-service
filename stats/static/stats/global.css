@@ -9,7 +9,7 @@ body {
 
 /* Centered content column */
 .page-wrapper {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 40px auto 80px auto;
   padding: 0 24px;
 }
@@ -106,7 +106,7 @@ body {
 /* Optional: tighten table at larger screens */
 @media (min-width: 1200px) {
   .page-wrapper {
-    max-width: 1024px;
+    max-width: 1200px;
   }
 }
 
