@@ -9,7 +9,7 @@ SLAPSHOT_BASE_URL = "https://slapshot.gg/api/game/players"
 
 
 def ingest_all_players(limit: int | None = None) -> int:
-    qs = Player.objects.order_by("game_user_id")
+    qs = Player.objects.order_by("slapshot_id")
     if limit is not None:
         qs = qs[:limit]
 
@@ -20,12 +20,12 @@ def ingest_all_players(limit: int | None = None) -> int:
 
     for idx, player in enumerate(qs, start=1):
         label = player.username or ""
-        print(f"[all] [{idx}/{total}] Ingesting {label} ({player.game_user_id})")
+        print(f"[all] [{idx}/{total}] Ingesting {label} ({player.slapshot_id})")
         try:
-            count = ingest_player_by_id(player.game_user_id)
+            count = ingest_player_by_id(player.slapshot_id)
             total_new_matches += count
         except Exception as e:
-            print(f"[all][ERROR] Error ingesting {player.game_user_id}: {e}")
+            print(f"[all][ERROR] Error ingesting {player.slapshot_id}: {e}")
 
     print(
         f"[all] Done ingesting all players. "
@@ -34,24 +34,24 @@ def ingest_all_players(limit: int | None = None) -> int:
     return total_new_matches
 
 
-def ingest_player_by_id(game_user_id: str) -> int:
-    print(f"[ingest] === Ingest run started for game_user_id={game_user_id} ===")
-    payload = fetch_player_json(game_user_id)
+def ingest_player_by_id(slapshot_id: str) -> int:
+    print(f"[ingest] === Ingest run started for slapshot_id={slapshot_id} ===")
+    payload = fetch_player_json(slapshot_id)
     new_matches = ingest_payload(payload)
     print(
-        f"[ingest] === Ingest run finished for game_user_id={game_user_id} "
+        f"[ingest] === Ingest run finished for slapshot_id={slapshot_id} "
         f"(new matches: {new_matches}) ==="
     )
     return new_matches
 
 
-def fetch_player_json(game_user_id: str) -> dict:
+def fetch_player_json(slapshot_id: str) -> dict:
     """
-    Call the Slapshot API and return the JSON payload for a given game_user_id.
-    URL: https://slapshot.gg/api/game/players/<game_user_id>
+    Call the Slapshot API and return the JSON payload for a given slapshot_id.
+    URL: https://slapshot.gg/api/game/players/<slapshot_id>
     """
-    url = f"{SLAPSHOT_BASE_URL}/{game_user_id}"
-    print(f"[ingest] Fetching data for game_user_id={game_user_id} from {url}")
+    url = f"{SLAPSHOT_BASE_URL}/{slapshot_id}"
+    print(f"[ingest] Fetching data for slapshot_id={slapshot_id} from {url}")
     resp = requests.get(url, timeout=10)
     resp.raise_for_status()
     data = resp.json()
@@ -60,9 +60,9 @@ def fetch_player_json(game_user_id: str) -> dict:
 
 def get_whitelisted_ids() -> set[str]:
     """
-    Load all whitelisted game_user_id values from the database.
+    Load all whitelisted slapshot_id values from the database.
     """
-    ids = set(Player.objects.values_list("game_user_id", flat=True))
+    ids = set(Player.objects.values_list("slapshot_id", flat=True))
     return ids
 
 
@@ -198,7 +198,7 @@ def ingest_match(match_data: dict) -> tuple[Match, bool]:
 
     for player_data in players:
         player_obj, player_created = Player.objects.get_or_create(
-            game_user_id=player_data.get("game_user_id", ""),
+            slapshot_id=player_data.get("game_user_id", ""),
             defaults={
                 "username": player_data.get("username", ""),
             },

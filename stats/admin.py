@@ -1,28 +1,60 @@
 # stats/admin.py
 from django.contrib import admin
+from django.utils.translation import ngettext
+from rangefilter.filters import DateRangeFilter
+
 from .models import Match, Player, PlayerMatchStats, IngestionRun
+
+
+@admin.action(description="Archive selected matches")
+def archive_matches(modeladmin, request, queryset):
+    updated = queryset.update(archived=True)
+    modeladmin.message_user(
+        request,
+        ngettext(
+            "%d match was archived.",
+            "%d matches were archived.",
+            updated,
+        )
+        % updated,
+    )
+
+
+@admin.action(description="Unarchive selected matches")
+def unarchive_matches(modeladmin, request, queryset):
+    updated = queryset.update(archived=False)
+    modeladmin.message_user(
+        request,
+        ngettext(
+            "%d match was unarchived.",
+            "%d matches were unarchived.",
+            updated,
+        )
+        % updated,
+    )
 
 
 @admin.register(Match)
 class MatchAdmin(admin.ModelAdmin):
-    list_display = ("created", "match_id", "winner", "periods_enabled")
-    list_filter = ("gamemode", "match_type", "region", "winner")
+    list_display = ("created", "match_id", "winner", "periods_enabled", "archived")
+    list_filter = (("created", DateRangeFilter), "periods_enabled")
     search_fields = ("match_id",)
     ordering = ("-created",)
+    actions = [archive_matches, unarchive_matches]
 
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ("username", "game_user_id")
-    search_fields = ("username", "game_user_id")
-    ordering = ("-game_user_id",)
+    list_display = ("username", "slapshot_id")
+    search_fields = ("username", "slapshot_id")
+    ordering = ("-slapshot_id",)
 
 
 @admin.register(PlayerMatchStats)
 class PlayerMatchStatsAdmin(admin.ModelAdmin):
     list_display = ("match__created", "player", "team", "goals", "assists", "score", "wins", "losses")
-    list_filter = ("team",)
-    search_fields = ("player__username", "player__game_user_id", "match__match_id")
+    list_filter = ("player",)
+    search_fields = ("player__username", "player__slapshot_id", "match__match_id")
     ordering = ("-match__created",)
 
 
@@ -40,7 +72,7 @@ class IngestionRunAdmin(admin.ModelAdmin):
     list_filter = ("ingestion_type", "player")
     search_fields = (
         "player__username",
-        "player__game_user_id",
+        "player__slapshot_id",
         "error_message",
     )
     date_hierarchy = "created_at"

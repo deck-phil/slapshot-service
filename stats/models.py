@@ -4,10 +4,10 @@ from django.db.models import Q
 
 class Player(models.Model):
     username = models.CharField(max_length=50)
-    game_user_id = models.CharField(max_length=50, unique=True)
+    slapshot_id = models.CharField(max_length=50, unique=True)
 
     class Meta:
-        unique_together = ("username", "game_user_id")
+        unique_together = ("username", "slapshot_id")
 
     def __str__(self):
         return f"{self.username}"
@@ -29,6 +29,8 @@ class Match(models.Model):
     current_period = models.IntegerField(null=True, blank=True)
     periods_enabled = models.BooleanField(default=False)
     custom_mercy_rule = models.IntegerField(null=True, blank=True)
+
+    archived = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.match_id}"

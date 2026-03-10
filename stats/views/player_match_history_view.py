@@ -1,16 +1,15 @@
-# stats/views/player_match_history_view.py
 from django.shortcuts import render, get_object_or_404
 
 from stats.models import Player, PlayerMatchStats
 
 
-def player_match_history_view(request, game_user_id):
-    player = get_object_or_404(Player, game_user_id=game_user_id)
+def player_match_history_view(request, slapshot_id):
+    player = get_object_or_404(Player, slapshot_id=slapshot_id)
 
     stats_qs = (
         PlayerMatchStats.objects
         .select_related("match")
-        .filter(player=player)
+        .filter(player=player, match__archived=False)
         .order_by("-match__created")
     )
 

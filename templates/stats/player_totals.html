@@ -35,7 +35,7 @@
                 <tbody>
                 {% for p in players %}
                     <tr>
-                        <td><a href="{% url "player_match_history" p.player_game_user_id %}">{{ p.player_username }}</a>
+                        <td><a href="{% url "player_match_history" p.slapshot_id %}">{{ p.player_username }}</a>
                         </td>
                         <td class="text-end">{{ p.total_games }}</td>
                         <td class="text-end">{{ p.total_wins }}</td>

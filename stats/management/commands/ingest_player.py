@@ -10,19 +10,19 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "--game-user-id",
+            "--slapshot_id",
             type=str,
             default="1831553",
-            help="Slapshot game_user_id to ingest",
+            help="Player slapshot_id to ingest",
         )
 
     def handle(self, *args, **options):
-        game_user_id = options["game_user_id"]
+        slapshot_id = options["slapshot_id"]
 
         try:
-            player = Player.objects.get(game_user_id=game_user_id)
+            player = Player.objects.get(slapshot_id=slapshot_id)
         except Player.DoesNotExist:
-            msg = f"Could not find player with game_user_id: {game_user_id}"
+            msg = f"Could not find player with slapshot id: {slapshot_id}"
             raise CommandError(msg)
 
         ingestion_run = IngestionRun.objects.create(
@@ -31,11 +31,11 @@ class Command(BaseCommand):
         )
 
         try:
-            matches_added = ingest_player_by_id(game_user_id)
+            matches_added = ingest_player_by_id(slapshot_id)
             ingestion_run.matches_added = matches_added
         except Exception as exc:
             ingestion_run.error_message = str(exc)
-            raise CommandError(f"Ingestion failed for {player} ({game_user_id}): {exc}")
+            raise CommandError(f"Ingestion failed for {player} ({slapshot_id}): {exc}")
         finally:
             ingestion_run.finished_at = timezone.now()
             ingestion_run.save(
@@ -44,6 +44,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Ingested {ingestion_run.matches_added} new matches for {player} ({game_user_id})"
+                f"Ingested {ingestion_run.matches_added} new matches for {player} ({slapshot_id})"
             )
         )

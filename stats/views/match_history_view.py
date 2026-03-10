@@ -1,6 +1,3 @@
-# stats/views/match_history_view.py
-from collections import defaultdict
-
 from django.shortcuts import render
 
 from stats.models import Match, PlayerMatchStats

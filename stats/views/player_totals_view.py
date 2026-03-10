@@ -7,7 +7,8 @@ from stats.models import PlayerMatchStats, IngestionRun
 def player_totals_view(request):
     qs = (
         PlayerMatchStats.objects
-        .values("player_id", "player__game_user_id", "player__username")
+        .filter(match__archived=False)
+        .values("player_id", "player__slapshot_id", "player__username")
         .annotate(
             sum_wins=Sum("wins"),
             sum_losses=Sum("losses"),
@@ -46,8 +47,7 @@ def player_totals_view(request):
 
         players.append(
             {
-                "player_pk": row["player_id"],
-                "player_game_user_id": row["player__game_user_id"],
+                "slapshot_id": row["player__slapshot_id"],
                 "player_username": row["player__username"],
                 "total_games": games,
                 "total_wins": total_wins,

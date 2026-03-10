@@ -9,5 +9,5 @@ urlpatterns = [
     path("", player_totals_view, name="player_totals"),
     path("ingest/", ingest_trigger_view, name="ingest_trigger"),
     path("history/", match_history_view, name="match_history"),
-    path("history/<int:game_user_id>/", player_match_history_view, name="player_match_history"),
+    path("history/<int:slapshot_id>/", player_match_history_view, name="player_match_history"),
 ]
