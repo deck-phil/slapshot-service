@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load tz %}
 
 {% block title %}Run Ingest{% endblock %}
 
@@ -47,8 +46,14 @@
             <tr>
               <td>{{ run.get_ingestion_type_display }}</td>
               <td>{{ run.player|default:"—" }}</td>
-              <td>{{ run.created_at|localtime|date:"M j, Y H:i" }}</td>
-              <td>{{ run.finished_at|localtime|date:"M j, Y H:i"|default:"In progress" }}</td>
+              <td><span class="local-dt" data-iso="{{ run.created_at|date:"c" }}"></span></td>
+              <td>
+                {% if run.finished_at %}
+                  <span class="local-dt" data-iso="{{ run.finished_at|date:"c" }}"></span>
+                {% else %}
+                  In progress
+                {% endif %}
+              </td>
               <td>{{ run.matches_added }}</td>
               <td>
                 {% if run.error_message %}
@@ -68,4 +73,20 @@
       <p class="helper-text">No ingestion runs yet.</p>
     {% endif %}
   </div>
+
+  <script>
+    document.querySelectorAll(".local-dt").forEach(function (el) {
+      var iso = el.getAttribute("data-iso");
+      if (!iso) return;
+      var d = new Date(iso);
+      el.textContent = d.toLocaleString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    });
+  </script>
 {% endblock %}
