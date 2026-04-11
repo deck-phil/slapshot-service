@@ -112,4 +112,79 @@
         });
     })();
 </script>
+<script>
+    (function () {
+        var STORAGE_KEY = 'slapshot_col_prefs';
+
+        function getPrefs() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function savePrefs(prefs) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+            } catch (e) {}
+        }
+
+        function applyVisibility(col, visible, table) {
+            // header cells
+            table.querySelectorAll('thead th[data-col="' + col + '"]').forEach(function (el) {
+                el.classList.toggle('col-hidden', !visible);
+            });
+            // body cells
+            table.querySelectorAll('tbody td[data-col="' + col + '"]').forEach(function (el) {
+                el.classList.toggle('col-hidden', !visible);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var toggleBar = document.getElementById('colToggles');
+            if (!toggleBar) return;
+
+            var table = document.querySelector('.stats-table');
+            if (!table) return;
+
+            var buttons = toggleBar.querySelectorAll('.col-toggle-btn');
+            var prefs = getPrefs();
+
+            // Build initial state: default active state from HTML, then override with saved prefs
+            var state = {};
+            buttons.forEach(function (btn) {
+                var col = btn.getAttribute('data-col');
+                // HTML default: active class present = visible
+                state[col] = btn.classList.contains('active');
+            });
+
+            if (prefs) {
+                Object.keys(prefs).forEach(function (col) {
+                    if (col in state) state[col] = prefs[col];
+                });
+            }
+
+            // Apply initial state
+            buttons.forEach(function (btn) {
+                var col = btn.getAttribute('data-col');
+                var visible = state[col];
+                btn.classList.toggle('active', visible);
+                applyVisibility(col, visible, table);
+            });
+
+            // Wire up click handlers
+            buttons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var col = btn.getAttribute('data-col');
+                    state[col] = !state[col];
+                    btn.classList.toggle('active', state[col]);
+                    applyVisibility(col, state[col], table);
+                    savePrefs(state);
+                });
+            });
+        });
+    })();
+</script>
 </html>
