@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}{{ season_label }} Season — Goon Lagoon{% endblock %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-title">{{ season_label|upper }}</div>
+
+        <div class="section-title">Season Stats</div>
+        <div class="section-subtitle helper-text">
+            {% if last_ingestion %}
+                Last updated {{ last_ingestion.created_at|date:"M j, Y, P" }}
+            {% else %}
+                Not updated yet
+            {% endif %}
+        </div>
+
+        <div class="col-toggles" id="colToggles">
+            <span class="col-toggles-label">Columns</span>
+            <button class="col-toggle-btn active" data-col="record">Record</button>
+            <button class="col-toggle-btn active" data-col="goals">Goals</button>
+            <button class="col-toggle-btn active" data-col="assists">Assists</button>
+            <button class="col-toggle-btn active" data-col="points">Points</button>
+            <button class="col-toggle-btn active" data-col="shots">Shots</button>
+            <button class="col-toggle-btn active" data-col="saves">Saves</button>
+            <button class="col-toggle-btn active" data-col="gpg">G/Game</button>
+            <button class="col-toggle-btn active" data-col="spg">Score/Game</button>
+            <button class="col-toggle-btn active" data-col="win_pct">Win %</button>
+            <button class="col-toggle-btn" data-col="ot_record">OT Record</button>
+            <button class="col-toggle-btn" data-col="shot_pct">Shot %</button>
+            <button class="col-toggle-btn" data-col="save_pct">Save %</button>
+            <button class="col-toggle-btn" data-col="blocks">Blocks</button>
+            <button class="col-toggle-btn" data-col="takeaways">TKA</button>
+            <button class="col-toggle-btn" data-col="turnovers">GVA</button>
+            <button class="col-toggle-btn" data-col="gwg">GWG</button>
+            <button class="col-toggle-btn" data-col="ot_goals">OT Goals</button>
+            <button class="col-toggle-btn" data-col="faceoff_pct">FO %</button>
+            <button class="col-toggle-btn" data-col="passes">Passes</button>
+            <button class="col-reset-btn" id="colReset">Reset</button>
+        </div>
+
+        <div class="stats-table-wrapper">
+            <table class="stats-table js-sortable">
+                <thead>
+                <tr>
+                    <th data-sort-disabled>Player</th>
+                    <th class="text-end" data-type="number" data-default-sort="desc">Games</th>
+                    <th class="text-end" data-type="number" data-col="record">Wins</th>
+                    <th class="text-end" data-type="number" data-col="record">Losses</th>
+                    <th class="text-end" data-type="number" data-col="ot_record">OT W</th>
+                    <th class="text-end" data-type="number" data-col="ot_record">OT L</th>
+                    <th class="text-end" data-type="number" data-col="goals">Goals</th>
+                    <th class="text-end" data-type="number" data-col="assists">Assists</th>
+                    <th class="text-end" data-type="number" data-col="points">Points</th>
+                    <th class="text-end" data-type="number" data-col="shots">Shots</th>
+                    <th class="text-end" data-type="number" data-col="saves">Saves</th>
+                    <th class="text-end" data-type="number" data-col="blocks">Blocks</th>
+                    <th class="text-end" data-type="number" data-col="takeaways">TKA</th>
+                    <th class="text-end" data-type="number" data-col="turnovers">GVA</th>
+                    <th class="text-end" data-type="number" data-col="gwg">GWG</th>
+                    <th class="text-end" data-type="number" data-col="ot_goals">OT Goals</th>
+                    <th class="text-end" data-type="number" data-col="passes">Passes</th>
+                    <th class="text-end" data-type="number" data-col="gpg">G/Game</th>
+                    <th class="text-end" data-type="number" data-col="spg">Score/Game</th>
+                    <th class="text-end" data-type="number" data-col="win_pct">Win %</th>
+                    <th class="text-end" data-type="number" data-col="shot_pct">Shot %</th>
+                    <th class="text-end" data-type="number" data-col="save_pct">Save %</th>
+                    <th class="text-end" data-type="number" data-col="faceoff_pct">FO %</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for p in players %}
+                    <tr>
+                        <td><a href="{% url 'player_match_history' p.slapshot_id %}">{{ p.player_username }}</a></td>
+                        <td class="text-end">{{ p.total_games }}</td>
+                        <td class="text-end" data-col="record">{{ p.total_wins }}</td>
+                        <td class="text-end" data-col="record">{{ p.total_losses }}</td>
+                        <td class="text-end" data-col="ot_record">{{ p.total_ot_wins }}</td>
+                        <td class="text-end" data-col="ot_record">{{ p.total_ot_losses }}</td>
+                        <td class="text-end" data-col="goals">{{ p.total_goals }}</td>
+                        <td class="text-end" data-col="assists">{{ p.total_assists }}</td>
+                        <td class="text-end" data-col="points">{{ p.total_points }}</td>
+                        <td class="text-end" data-col="shots">{{ p.total_shots }}</td>
+                        <td class="text-end" data-col="saves">{{ p.total_saves }}</td>
+                        <td class="text-end" data-col="blocks">{{ p.total_blocks }}</td>
+                        <td class="text-end" data-col="takeaways">{{ p.total_takeaways }}</td>
+                        <td class="text-end" data-col="turnovers">{{ p.total_turnovers }}</td>
+                        <td class="text-end" data-col="gwg">{{ p.total_gwg }}</td>
+                        <td class="text-end" data-col="ot_goals">{{ p.total_ot_goals }}</td>
+                        <td class="text-end" data-col="passes">{{ p.total_passes }}</td>
+                        <td class="text-end" data-col="gpg">{{ p.goals_per_game|floatformat:2 }}</td>
+                        <td class="text-end" data-col="spg">{{ p.score_per_game|floatformat:2 }}</td>
+                        <td class="text-end" data-col="win_pct">{{ p.win_pct|floatformat:1 }}</td>
+                        <td class="text-end" data-col="shot_pct">{% if p.shot_pct != None %}{{ p.shot_pct|floatformat:1 }}{% else %}—{% endif %}</td>
+                        <td class="text-end" data-col="save_pct">{% if p.save_pct != None %}{{ p.save_pct|floatformat:1 }}{% else %}—{% endif %}</td>
+                        <td class="text-end" data-col="faceoff_pct">{% if p.faceoff_pct != None %}{{ p.faceoff_pct|floatformat:1 }}{% else %}—{% endif %}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="23" class="text-center">
+                            No stats for this season yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
