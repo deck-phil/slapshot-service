@@ -46,10 +46,10 @@
             <tr>
               <td>{{ run.get_ingestion_type_display }}</td>
               <td>{{ run.player|default:"—" }}</td>
-              <td><span class="local-dt" data-iso="{{ run.created_at|date:"c" }}"></span></td>
+              <td>{{ run.created_at|date:"M j, Y, P" }}</td>
               <td>
                 {% if run.finished_at %}
-                  <span class="local-dt" data-iso="{{ run.finished_at|date:"c" }}"></span>
+                  {{ run.finished_at|date:"M j, Y, P" }}
                 {% else %}
                   In progress
                 {% endif %}
@@ -74,19 +74,4 @@
     {% endif %}
   </div>
 
-  <script>
-    document.querySelectorAll(".local-dt").forEach(function (el) {
-      var iso = el.getAttribute("data-iso");
-      if (!iso) return;
-      var d = new Date(iso);
-      el.textContent = d.toLocaleString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
-    });
-  </script>
 {% endblock %}
