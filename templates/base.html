@@ -9,6 +9,18 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <a href="{% url 'player_totals' %}" class="top-nav-brand">Slapshot</a>
+    <div class="top-nav-links">
+      <a href="{% url 'player_totals' %}" class="top-nav-link{% if request.resolver_match.url_name == 'player_totals' %} active{% endif %}">Stats</a>
+      <a href="{% url 'match_history' %}" class="top-nav-link{% if request.resolver_match.url_name == 'match_history' or request.resolver_match.url_name == 'player_match_history' %} active{% endif %}">Match History</a>
+      {% if user.is_staff %}
+        <a href="{% url 'ingest_trigger' %}" class="top-nav-link{% if request.resolver_match.url_name == 'ingest_trigger' %} active{% endif %}">Ingest</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
 {% block content %}{% endblock %}
 </body>
 <script>

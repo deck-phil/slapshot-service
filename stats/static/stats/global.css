@@ -7,6 +7,60 @@ body {
   color: #e5f3ff;                  /* light blue/white */
 }
 
+/* Top navbar */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #0a2f52;
+  border-bottom: 1px solid #0b3a63;
+}
+
+.top-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 52px;
+}
+
+.top-nav-brand {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.top-nav-links {
+  display: flex;
+  gap: 4px;
+}
+
+.top-nav-link {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #c1d8f2;
+  text-decoration: none;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.top-nav-link:hover {
+  background-color: #10497c;
+  color: #ffffff;
+}
+
+.top-nav-link.active {
+  background-color: #10497c;
+  color: #ffffff;
+}
+
 /* Centered content column */
 .page-wrapper {
   max-width: 1200px;
