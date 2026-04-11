@@ -61,6 +61,23 @@ body {
   color: #ffffff;
 }
 
+.top-nav-logout {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(193, 216, 242, 0.3);
+  background-color: transparent;
+  color: #c1d8f2;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.top-nav-logout:hover {
+  border-color: #e5f3ff;
+  color: #ffffff;
+}
+
 /* Centered content column */
 .page-wrapper {
   max-width: 1200px;
