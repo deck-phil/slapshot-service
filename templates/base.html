@@ -20,6 +20,12 @@
         <a href="{% url 'ingest_trigger' %}" class="top-nav-link{% if request.resolver_match.url_name == 'ingest_trigger' %} active{% endif %}">Ingest</a>
       {% endif %}
     </div>
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'logout' %}" style="margin-left: auto;">
+        {% csrf_token %}
+        <button type="submit" class="top-nav-logout">Logout</button>
+      </form>
+    {% endif %}
   </div>
 </nav>
 {% block content %}{% endblock %}
