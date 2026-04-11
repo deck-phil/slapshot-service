@@ -252,6 +252,25 @@ table.js-sortable th.sortable {
   color: #ffffff;
 }
 
+.col-reset-btn {
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid #4a7aaa;
+  background-color: transparent;
+  color: #7aaad4;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: border-color 0.12s ease, color 0.12s ease;
+  user-select: none;
+}
+
+.col-reset-btn:hover {
+  border-color: #e5f3ff;
+  color: #e5f3ff;
+}
+
 /* Hidden column cells */
 .col-hidden {
   display: none;

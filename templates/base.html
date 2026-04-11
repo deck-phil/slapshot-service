@@ -136,7 +136,10 @@
 
             const state = {};
             buttons.forEach(function (btn) {
-                state[btn.getAttribute('data-col')] = btn.classList.contains('active');
+                const col = btn.getAttribute('data-col');
+                const htmlDefault = btn.classList.contains('active');
+                btn.dataset.defaultVisible = htmlDefault;
+                state[col] = htmlDefault;
             });
 
             if (prefs) {
@@ -160,6 +163,22 @@
                     savePrefs(state);
                 });
             });
+
+            const resetBtn = document.getElementById('colReset');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function () {
+                    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+                    buttons.forEach(function (btn) {
+                        const col = btn.getAttribute('data-col');
+                        const defaultVisible = btn.classList.contains('active');
+                        // re-read the HTML default from the data attribute we stash on init
+                        const htmlDefault = btn.dataset.defaultVisible === 'true';
+                        state[col] = htmlDefault;
+                        btn.classList.toggle('active', htmlDefault);
+                        applyVisibility(col, htmlDefault, table);
+                    });
+                });
+            }
         });
     })();
 </script>
