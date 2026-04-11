@@ -119,6 +119,7 @@ body {
   font-weight: 600;
   text-align: left;
   color: #e5f3ff;
+  white-space: nowrap;
 }
 
 /* Body rows */
@@ -133,6 +134,7 @@ body {
 .stats-table tbody td {
   padding: 10px 20px;
   color: #d7e7ff;
+  white-space: nowrap;
 }
 
 /* Links inside table (match ids / JSON links) */
