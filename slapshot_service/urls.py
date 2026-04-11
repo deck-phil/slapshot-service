@@ -20,6 +20,8 @@ from django.urls import path, include
 
 from stats.views.custom_404_view import custom_404_view
 
+admin.site.login_url = "/login/"
+
 handler404 = custom_404_view
 
 urlpatterns = [
