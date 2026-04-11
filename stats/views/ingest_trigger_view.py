@@ -34,4 +34,10 @@ def ingest_trigger_view(request):
         messages.success(request, "Ingest completed.")
         return redirect(reverse("ingest_trigger"))
 
-    return render(request, "stats/ingest_trigger.html")
+    RECENT_RUN_LIMIT = 25
+    ingestion_runs = IngestionRun.objects.select_related("player").all()[:RECENT_RUN_LIMIT]
+
+    return render(request, "stats/ingest_trigger.html", {
+        "ingestion_runs": ingestion_runs,
+        "run_limit": RECENT_RUN_LIMIT,
+    })

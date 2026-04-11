@@ -25,5 +25,46 @@
         Run ingest
       </button>
     </form>
+
+    <div class="section-title">Last {{ run_limit }} runs</div>
+
+    {% if ingestion_runs %}
+      <div class="stats-table-wrapper">
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Player</th>
+              <th>Started</th>
+              <th>Finished</th>
+              <th>Matches Added</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for run in ingestion_runs %}
+            <tr>
+              <td>{{ run.get_ingestion_type_display }}</td>
+              <td>{{ run.player|default:"—" }}</td>
+              <td>{{ run.created_at|localtime|date:"M j, Y H:i" }}</td>
+              <td>{{ run.finished_at|localtime|date:"M j, Y H:i"|default:"In progress" }}</td>
+              <td>{{ run.matches_added }}</td>
+              <td>
+                {% if run.error_message %}
+                  <span class="helper-text" title="{{ run.error_message }}">Error</span>
+                {% elif run.finished_at %}
+                  OK
+                {% else %}
+                  Running
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="helper-text">No ingestion runs yet.</p>
+    {% endif %}
   </div>
 {% endblock %}
