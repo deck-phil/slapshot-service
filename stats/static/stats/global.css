@@ -155,6 +155,43 @@ body {
   white-space: nowrap;
 }
 
+/* Sticky first column */
+.stats-table thead th:first-child,
+.stats-table tbody td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.stats-table thead th:first-child {
+  background-color: #10497c;
+}
+
+.stats-table tbody tr:nth-child(odd) td:first-child {
+  background-color: #0e416f;
+}
+
+.stats-table tbody tr:nth-child(even) td:first-child {
+  background-color: #0d3b66;
+}
+
+.stats-table tbody tr.stats-row-win td:first-child {
+  background-color: rgba(0, 80, 0, 0.35) !important;
+}
+
+/* Subtle right shadow to indicate more content */
+.stats-table thead th:first-child::after,
+.stats-table tbody td:first-child::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -6px;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+  pointer-events: none;
+}
+
 /* Links inside table (match ids / JSON links) */
 .stats-table a {
   color: #ffffff;
