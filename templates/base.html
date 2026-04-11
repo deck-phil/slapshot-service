@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Stats{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'stats/favicon.png' %}">
     <link rel="stylesheet" href="{% static 'stats/global.css' %}">
@@ -12,25 +13,48 @@
 <nav class="top-nav">
   <div class="top-nav-inner">
     <a href="{% url 'season_stats' %}" class="top-nav-brand">Slapshot</a>
-    <div class="top-nav-links">
+    <button class="top-nav-hamburger" id="navHamburger" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="top-nav-links" id="navLinks">
       <a href="{% url 'season_stats' %}" class="top-nav-link{% if request.resolver_match.url_name == 'season_stats' %} active{% endif %}">Season</a>
       <a href="{% url 'player_totals' %}" class="top-nav-link{% if request.resolver_match.url_name == 'player_totals' %} active{% endif %}">All Time</a>
       <a href="{% url 'match_history' %}" class="top-nav-link{% if request.resolver_match.url_name == 'match_history' or request.resolver_match.url_name == 'player_match_history' %} active{% endif %}">Match History</a>
       {% if user.is_staff %}
         <a href="{% url 'ingest_trigger' %}" class="top-nav-link{% if request.resolver_match.url_name == 'ingest_trigger' %} active{% endif %}">Ingest</a>
       {% endif %}
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}" class="top-nav-logout-form">
+          {% csrf_token %}
+          <button type="submit" class="top-nav-logout">Logout</button>
+        </form>
+      {% endif %}
     </div>
-    {% if user.is_authenticated %}
-      <form method="post" action="{% url 'logout' %}" style="margin-left: auto;">
-        {% csrf_token %}
-        <button type="submit" class="top-nav-logout">Logout</button>
-      </form>
-    {% endif %}
   </div>
 </nav>
 {% block content %}{% endblock %}
 </body>
 <script>
+    // ─── Hamburger Nav ─────────────────────────────────────────────────────────────
+    (function () {
+        const btn = document.getElementById('navHamburger');
+        const links = document.getElementById('navLinks');
+        if (!btn || !links) return;
+        btn.addEventListener('click', function () {
+            const open = links.classList.toggle('nav-open');
+            btn.classList.toggle('nav-open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        // Close menu when a nav link is clicked
+        links.querySelectorAll('.top-nav-link').forEach(function (a) {
+            a.addEventListener('click', function () {
+                links.classList.remove('nav-open');
+                btn.classList.remove('nav-open');
+                btn.setAttribute('aria-expanded', 'false');
+            });
+        });
+    })();
+
     // ─── Table Sorter ────────────────────────────────────────────────────────────
     (function () {
         function parseCell(text, type, cellEl) {
