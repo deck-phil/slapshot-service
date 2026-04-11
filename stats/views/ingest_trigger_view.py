@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.formats import date_format
 
 from stats.ingest import ingest_all_players
 from stats.models import IngestionRun
@@ -31,7 +32,11 @@ def ingest_trigger_view(request):
             ingestion_run.finished_at = timezone.now()
             ingestion_run.save(update_fields=["matches_added", "error_message", "finished_at"])
 
+        ran_at = date_format(timezone.localtime(ingestion_run.finished_at), "M j, Y, P")
+        match_word = "game" if ingestion_run.matches_added == 1 else "games"
         messages.success(request, "Ingest completed.")
+        messages.success(request, f"Ran at {ran_at}.")
+        messages.success(request, f"{ingestion_run.matches_added} {match_word} ingested.")
         return redirect(reverse("ingest_trigger"))
 
     RECENT_RUN_LIMIT = 25
