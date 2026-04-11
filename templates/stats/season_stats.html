@@ -9,7 +9,7 @@
         <div class="section-title">Season Stats</div>
         <div class="section-subtitle helper-text">
             {% if last_ingestion %}
-                Last updated on {{ last_ingestion.created_at|date:"M j, Y, P" }}
+                Last updated on {{ last_ingestion.created_at }}
             {% else %}
                 Not updated yet
             {% endif %}
