@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Goon Lagoon Scoreboard{% endblock %}
+{% block title %}{{ season_label }} Season{% endblock %}
 
 {% block content %}
     <div class="page-wrapper">
-        <div class="page-title">GOON LAGOON</div>
+        <div class="page-title">{{ season_label|upper }}</div>
 
-        <div class="section-title">All-time stats</div>
+        <div class="section-title">Season Stats</div>
         <div class="section-subtitle helper-text">
             {% if last_ingestion %}
                 Last updated on {{ last_ingestion.created_at }}
@@ -71,7 +71,7 @@
                 <tbody>
                 {% for p in players %}
                     <tr>
-                        <td><a href="{% url "player_match_history" p.slapshot_id %}">{{ p.player_username }}</a></td>
+                        <td><a href="{% url 'player_match_history' p.slapshot_id %}">{{ p.player_username }}</a></td>
                         <td class="text-end">{{ p.total_games }}</td>
                         <td class="text-end" data-col="record">{{ p.total_wins }}</td>
                         <td class="text-end" data-col="record">{{ p.total_losses }}</td>
@@ -98,14 +98,12 @@
                 {% empty %}
                     <tr>
                         <td colspan="23" class="text-center">
-                            No stats available yet.
+                            No stats for this season yet.
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
-
-
     </div>
 {% endblock %}

@@ -9,6 +9,25 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
+<nav class="top-nav">
+  <div class="top-nav-inner">
+    <a href="{% url 'season_stats' %}" class="top-nav-brand">Slapshot</a>
+    <div class="top-nav-links">
+      <a href="{% url 'season_stats' %}" class="top-nav-link{% if request.resolver_match.url_name == 'season_stats' %} active{% endif %}">Season</a>
+      <a href="{% url 'player_totals' %}" class="top-nav-link{% if request.resolver_match.url_name == 'player_totals' %} active{% endif %}">All Time</a>
+      <a href="{% url 'match_history' %}" class="top-nav-link{% if request.resolver_match.url_name == 'match_history' or request.resolver_match.url_name == 'player_match_history' %} active{% endif %}">Match History</a>
+      {% if user.is_staff %}
+        <a href="{% url 'ingest_trigger' %}" class="top-nav-link{% if request.resolver_match.url_name == 'ingest_trigger' %} active{% endif %}">Ingest</a>
+      {% endif %}
+    </div>
+    {% if user.is_authenticated %}
+      <form method="post" action="{% url 'logout' %}" style="margin-left: auto;">
+        {% csrf_token %}
+        <button type="submit" class="top-nav-logout">Logout</button>
+      </form>
+    {% endif %}
+  </div>
+</nav>
 {% block content %}{% endblock %}
 </body>
 <script>
