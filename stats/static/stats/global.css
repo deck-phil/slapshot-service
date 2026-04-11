@@ -178,3 +178,35 @@ table.js-sortable th.sortable {
     -ms-user-select: none;     /* IE/Edge */
     user-select: none;         /* Standard */
 }
+
+.stats-cards {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;          /* still allows multiple rows */
+}
+
+.stats-card {
+  flex: 0 0 auto;                 /* shrink to content */
+  padding: 8px 14px;
+  margin-bottom: 20px;
+
+  border-radius: 3px;
+  background-color: #10497c;      /* same family as table header */
+  border: 1px solid #0b3154;      /* slightly darker border */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+.stats-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #c1d8f2;                 /* same as section-subtitle */
+  margin-bottom: 2px;
+}
+
+.stats-card-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;                 /* matches page-title / table links */
+}

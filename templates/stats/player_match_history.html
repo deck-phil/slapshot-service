@@ -6,9 +6,121 @@
     <div class="page-wrapper">
         <div class="page-title">{{ player.username }}</div>
 
-        <div class="section-title">
-            Match History
+        <div class="section-title">All-Time Record</div>
+        <div class="section-subtitle helper-text">
+            Wins, losses, and overtime wins across all recorded matches.
         </div>
+
+        <div class="stats-cards">
+            <div class="stats-card">
+                <div class="stats-card-label">Games</div>
+                <div class="stats-card-value">{{ totals.games|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Wins</div>
+                <div class="stats-card-value">{{ totals.wins|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Losses</div>
+                <div class="stats-card-value">{{ totals.losses|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">OT Wins</div>
+                <div class="stats-card-value">{{ totals.ot_wins|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">OT Losses</div>
+                <div class="stats-card-value">{{ totals.ot_losses|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Shutouts</div>
+                <div class="stats-card-value">{{ totals.shutouts|default:0 }}</div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 28px;">Scoring</div>
+        <div class="section-subtitle helper-text">
+            Goals, assists, and shooting across all recorded matches.
+        </div>
+
+        <div class="stats-cards">
+            <div class="stats-card">
+                <div class="stats-card-label">Goals</div>
+                <div class="stats-card-value">{{ totals.goals|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Assists</div>
+                <div class="stats-card-value">{{ totals.assists|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Points</div>
+                <div class="stats-card-value">{{ totals.points|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Shots</div>
+                <div class="stats-card-value">{{ totals.shots|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Shot %</div>
+                <div class="stats-card-value">
+                    {% if totals.shot_pct is not None %}{{ totals.shot_pct }}%{% else %}—{% endif %}
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">GWG</div>
+                <div class="stats-card-value">{{ totals.game_winning_goals|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">OT Goals</div>
+                <div class="stats-card-value">{{ totals.ot_goals|default:0 }}</div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 28px;">Defence &amp; Possession</div>
+        <div class="section-subtitle helper-text">
+            Saves, blocks, takeaways, and puck control across all recorded matches.
+        </div>
+
+        <div class="stats-cards">
+            <div class="stats-card">
+                <div class="stats-card-label">Saves</div>
+                <div class="stats-card-value">{{ totals.saves|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Save %</div>
+                <div class="stats-card-value">
+                    {% if totals.save_pct is not None %}{{ totals.save_pct }}%{% else %}—{% endif %}
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Blocks</div>
+                <div class="stats-card-value">{{ totals.blocks|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Takeaways</div>
+                <div class="stats-card-value">{{ totals.takeaways|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Giveaways</div>
+                <div class="stats-card-value">{{ totals.turnovers|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Passes</div>
+                <div class="stats-card-value">{{ totals.passes|default:0 }}</div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Faceoff %</div>
+                <div class="stats-card-value">
+                    {% if totals.faceoff_pct is not None %}{{ totals.faceoff_pct }}%{% else %}—{% endif %}
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-card-label">Post Hits</div>
+                <div class="stats-card-value">{{ totals.post_hits|default:0 }}</div>
+            </div>
+        </div>
+
+        <div class="section-title" style="margin-top: 28px;">Match History</div>
         <div class="section-subtitle helper-text">
             Per-game goals, assists, and saves.
         </div>
@@ -33,7 +145,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for row in rows %}
+                {% for row in match_history %}
                     <tr class="{% if row.is_win %}stats-row-win{% endif %}">
                         <td class="stats-time"
                             data-timestamp="{{ row.match.created|date:'U' }}000">
@@ -49,9 +161,7 @@
                                 {{ name }}{% if not forloop.last %}, {% endif %}
                             {% endfor %}
                         </td>
-                        <td>
-                            {{ row.home_goals }} – {{ row.away_goals }}
-                        </td>
+                        <td>{{ row.home_goals }} – {{ row.away_goals }}</td>
                         <td>{{ row.score }}</td>
                         <td>{{ row.goals }}</td>
                         <td>{{ row.shots }}</td>
