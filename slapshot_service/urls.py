@@ -16,15 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 from django.urls import path, include
+from django.views.decorators.http import require_POST
 
 from stats.views.custom_404_view import custom_404_view
 
+admin.site.login_url = "/login/"
+
 handler404 = custom_404_view
+
+
+@require_POST
+def logout_view(request):
+    logout(request)
+    return redirect(request.META.get("HTTP_REFERER", "/"))
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("login/", auth_views.LoginView.as_view(), name="login"),
-    path("logout/", auth_views.LogoutView.as_view(), name="logout"),
+    path("logout/", logout_view, name="logout"),
     path("", include("stats.urls")),
 ]
