@@ -24,7 +24,7 @@
             <button class="col-toggle-btn active" data-col="shots">Shots</button>
             <button class="col-toggle-btn active" data-col="saves">Saves</button>
             <button class="col-toggle-btn active" data-col="gpg">G/Game</button>
-            <button class="col-toggle-btn active" data-col="ppg">Pts/Game</button>
+            <button class="col-toggle-btn active" data-col="spg">Score/Game</button>
             <button class="col-toggle-btn active" data-col="win_pct">Win %</button>
             <button class="col-toggle-btn" data-col="ot_record">OT Record</button>
             <button class="col-toggle-btn" data-col="shot_pct">Shot %</button>
@@ -60,7 +60,7 @@
                     <th class="text-end" data-type="number" data-col="ot_goals">OT Goals</th>
                     <th class="text-end" data-type="number" data-col="passes">Passes</th>
                     <th class="text-end" data-type="number" data-col="gpg">G/Game</th>
-                    <th class="text-end" data-type="number" data-col="ppg">Pts/Game</th>
+                    <th class="text-end" data-type="number" data-col="spg">Score/Game</th>
                     <th class="text-end" data-type="number" data-col="win_pct">Win %</th>
                     <th class="text-end" data-type="number" data-col="shot_pct">Shot %</th>
                     <th class="text-end" data-type="number" data-col="save_pct">Save %</th>
@@ -88,7 +88,7 @@
                         <td class="text-end" data-col="ot_goals">{{ p.total_ot_goals }}</td>
                         <td class="text-end" data-col="passes">{{ p.total_passes }}</td>
                         <td class="text-end" data-col="gpg">{{ p.goals_per_game|floatformat:2 }}</td>
-                        <td class="text-end" data-col="ppg">{{ p.points_per_game|floatformat:2 }}</td>
+                        <td class="text-end" data-col="spg">{{ p.score_per_game|floatformat:2 }}</td>
                         <td class="text-end" data-col="win_pct">{{ p.win_pct|floatformat:1 }}</td>
                         <td class="text-end" data-col="shot_pct">{% if p.shot_pct != None %}{{ p.shot_pct|floatformat:1 }}{% else %}—{% endif %}</td>
                         <td class="text-end" data-col="save_pct">{% if p.save_pct != None %}{{ p.save_pct|floatformat:1 }}{% else %}—{% endif %}</td>
