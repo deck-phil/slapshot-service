@@ -118,6 +118,7 @@ body {
   border-radius: 3px;
   overflow-x: auto;
   background-color: #10497c; /* header row bg */
+  padding-bottom: 8px;
 }
 
 /* Base table */
