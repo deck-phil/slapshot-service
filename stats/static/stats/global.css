@@ -43,7 +43,7 @@ body {
 /* Table container */
 .stats-table-wrapper {
   border-radius: 3px;
-  overflow: hidden;
+  overflow-x: auto;
   background-color: #10497c; /* header row bg */
 }
 
