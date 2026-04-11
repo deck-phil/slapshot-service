@@ -155,33 +155,33 @@ body {
   white-space: nowrap;
 }
 
-/* Sticky first column */
-.stats-table thead th:first-child,
-.stats-table tbody td:first-child {
+/* Sticky first column — opt in with .col-sticky-first on the table */
+.col-sticky-first thead th:first-child,
+.col-sticky-first tbody td:first-child {
   position: sticky;
   left: 0;
   z-index: 1;
 }
 
-.stats-table thead th:first-child {
+.col-sticky-first thead th:first-child {
   background-color: #10497c;
 }
 
-.stats-table tbody tr:nth-child(odd) td:first-child {
+.col-sticky-first tbody tr:nth-child(odd) td:first-child {
   background-color: #0e416f;
 }
 
-.stats-table tbody tr:nth-child(even) td:first-child {
+.col-sticky-first tbody tr:nth-child(even) td:first-child {
   background-color: #0d3b66;
 }
 
-.stats-table tbody tr.stats-row-win td:first-child {
+.col-sticky-first tbody tr.stats-row-win td:first-child {
   background-color: rgba(0, 80, 0, 0.35) !important;
 }
 
 /* Subtle right shadow to indicate more content */
-.stats-table thead th:first-child::after,
-.stats-table tbody td:first-child::after {
+.col-sticky-first thead th:first-child::after,
+.col-sticky-first tbody td:first-child::after {
   content: '';
   position: absolute;
   top: 0;
