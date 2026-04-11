@@ -19,12 +19,20 @@
       Click the button below to fetch and ingest matches for all players.
     </div>
 
-    <form method="post">
+    <form method="post" id="ingest-form">
       {% csrf_token %}
-      <button type="submit" class="btn-primary">
+      <button type="submit" class="btn-primary" id="ingest-btn">
         Run ingest
       </button>
     </form>
+
+    <script>
+      document.getElementById("ingest-form").addEventListener("submit", function () {
+        var btn = document.getElementById("ingest-btn");
+        btn.disabled = true;
+        btn.textContent = "Running...";
+      });
+    </script>
 
     <div class="section-title">Last {{ run_limit }} runs</div>
 
