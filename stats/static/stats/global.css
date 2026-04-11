@@ -275,3 +275,12 @@ table.js-sortable th.sortable {
 .col-hidden {
   display: none;
 }
+
+@keyframes col-flash {
+    0%   { background-color: rgba(30, 167, 255, 0.25); }
+    100% { background-color: transparent; }
+}
+
+.col-flash {
+    animation: col-flash 0.4s ease-out;
+}

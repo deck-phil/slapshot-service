@@ -121,6 +121,14 @@
         function applyVisibility(col, visible, table) {
             table.querySelectorAll('[data-col="' + col + '"]').forEach(function (el) {
                 el.classList.toggle('col-hidden', !visible);
+                if (visible) {
+                    el.classList.remove('col-flash');
+                    void el.offsetWidth;
+                    el.classList.add('col-flash');
+                    el.addEventListener('animationend', function () {
+                        el.classList.remove('col-flash');
+                    }, { once: true });
+                }
             });
         }
 
