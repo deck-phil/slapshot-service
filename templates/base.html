@@ -12,11 +12,12 @@
 {% block content %}{% endblock %}
 </body>
 <script>
+    // ─── Table Sorter ────────────────────────────────────────────────────────────
     (function () {
         function parseCell(text, type, cellEl) {
             text = text.trim();
             if (type === 'number') {
-                var n = parseFloat(text.replace(/[^\d.-]/g, ''));
+                const n = parseFloat(text.replace(/[^\d.-]/g, ''));
                 return isNaN(n) ? 0 : n;
             }
             if (type === 'date') {
@@ -25,28 +26,20 @@
                 const n = Number(tsAttr);
                 return isNaN(n) ? 0 : n;
             }
-
             return text.toLowerCase();
         }
 
         function sortTable(tbody, columnIndex, type, asc) {
             const rows = Array.from(tbody.querySelectorAll('tr'));
-
             rows.sort(function (a, b) {
                 const aCell = a.children[columnIndex];
                 const bCell = b.children[columnIndex];
-
-                const aText = aCell ? aCell.textContent : '';
-                const bText = bCell ? bCell.textContent : '';
-
-                const aVal = parseCell(aText, type, aCell);
-                const bVal = parseCell(bText, type, bCell);
-
+                const aVal = parseCell(aCell ? aCell.textContent : '', type, aCell);
+                const bVal = parseCell(bCell ? bCell.textContent : '', type, bCell);
                 if (aVal < bVal) return asc ? -1 : 1;
                 if (aVal > bVal) return asc ? 1 : -1;
                 return 0;
             });
-
             rows.forEach(row => tbody.appendChild(row));
         }
 
@@ -67,7 +60,6 @@
                     th.addEventListener('click', function () {
                         const type = th.getAttribute('data-type') || 'string';
 
-                        // reset other headers
                         headers.forEach(function (otherTh) {
                             if (otherTh === th) return;
                             otherTh.dataset.sortDir = 'none';
@@ -75,10 +67,7 @@
                             otherTh.setAttribute('aria-sort', 'none');
                         });
 
-                        // toggle dir
-                        const current = th.dataset.sortDir;
-                        const asc = current !== 'asc';
-
+                        const asc = th.dataset.sortDir !== 'asc';
                         th.dataset.sortDir = asc ? 'asc' : 'desc';
                         th.classList.toggle('sort-asc', asc);
                         th.classList.toggle('sort-desc', !asc);
@@ -92,10 +81,8 @@
                 if (defaultTh) {
                     const index = Array.prototype.indexOf.call(headers, defaultTh);
                     const type = defaultTh.getAttribute('data-type') || 'string';
-                    const dirAttr = defaultTh.getAttribute('data-default-sort') || 'asc';
-                    const asc = dirAttr !== 'desc';
+                    const asc = defaultTh.getAttribute('data-default-sort') !== 'desc';
 
-                    // set initial state classes/aria
                     headers.forEach(function (otherTh) {
                         otherTh.dataset.sortDir = 'none';
                         otherTh.classList.remove('sort-asc', 'sort-desc');
@@ -111,14 +98,14 @@
             });
         });
     })();
-</script>
-<script>
+
+    // ─── Column Toggle ───────────────────────────────────────────────────────────
     (function () {
-        var STORAGE_KEY = 'slapshot_col_prefs';
+        const STORAGE_KEY = 'slapshot_col_prefs_' + window.location.pathname;
 
         function getPrefs() {
             try {
-                var raw = localStorage.getItem(STORAGE_KEY);
+                const raw = localStorage.getItem(STORAGE_KEY);
                 return raw ? JSON.parse(raw) : null;
             } catch (e) {
                 return null;
@@ -132,32 +119,24 @@
         }
 
         function applyVisibility(col, visible, table) {
-            // header cells
-            table.querySelectorAll('thead th[data-col="' + col + '"]').forEach(function (el) {
-                el.classList.toggle('col-hidden', !visible);
-            });
-            // body cells
-            table.querySelectorAll('tbody td[data-col="' + col + '"]').forEach(function (el) {
+            table.querySelectorAll('[data-col="' + col + '"]').forEach(function (el) {
                 el.classList.toggle('col-hidden', !visible);
             });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            var toggleBar = document.getElementById('colToggles');
+            const toggleBar = document.getElementById('colToggles');
             if (!toggleBar) return;
 
-            var table = document.querySelector('.stats-table');
+            const table = document.querySelector('.stats-table');
             if (!table) return;
 
-            var buttons = toggleBar.querySelectorAll('.col-toggle-btn');
-            var prefs = getPrefs();
+            const buttons = toggleBar.querySelectorAll('.col-toggle-btn');
+            const prefs = getPrefs();
 
-            // Build initial state: default active state from HTML, then override with saved prefs
-            var state = {};
+            const state = {};
             buttons.forEach(function (btn) {
-                var col = btn.getAttribute('data-col');
-                // HTML default: active class present = visible
-                state[col] = btn.classList.contains('active');
+                state[btn.getAttribute('data-col')] = btn.classList.contains('active');
             });
 
             if (prefs) {
@@ -166,18 +145,15 @@
                 });
             }
 
-            // Apply initial state
             buttons.forEach(function (btn) {
-                var col = btn.getAttribute('data-col');
-                var visible = state[col];
-                btn.classList.toggle('active', visible);
-                applyVisibility(col, visible, table);
+                const col = btn.getAttribute('data-col');
+                btn.classList.toggle('active', state[col]);
+                applyVisibility(col, state[col], table);
             });
 
-            // Wire up click handlers
             buttons.forEach(function (btn) {
                 btn.addEventListener('click', function () {
-                    var col = btn.getAttribute('data-col');
+                    const col = btn.getAttribute('data-col');
                     state[col] = !state[col];
                     btn.classList.toggle('active', state[col]);
                     applyVisibility(col, state[col], table);
