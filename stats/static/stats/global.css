@@ -14,6 +14,7 @@ body {
   z-index: 100;
   background-color: #0a2f52;
   border-bottom: 1px solid #0b3a63;
+  /* position:sticky and position:relative coexist — sticky IS a relative formatting context */
 }
 
 .top-nav-inner {
@@ -358,3 +359,141 @@ table.js-sortable th.sortable {
 .col-flash {
     animation: col-flash 0.4s ease-out;
 }
+
+/* ── Mobile nav: hamburger button (hidden on desktop) ── */
+.top-nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.top-nav-hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: #c1d8f2;
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+/* Animate to X when open */
+.top-nav-hamburger.nav-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.top-nav-hamburger.nav-open span:nth-child(2) {
+  opacity: 0;
+}
+.top-nav-hamburger.nav-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Logout form lives inside nav links — visible on both desktop and mobile */
+.top-nav-logout-form {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* ── Responsive breakpoint ── */
+@media (max-width: 640px) {
+  /* Show hamburger, hide desktop logout form outside nav */
+  .top-nav-hamburger {
+    display: flex;
+  }
+
+  /* Nav links: collapsed by default on mobile */
+  .top-nav-links {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    position: absolute;
+    top: 52px;
+    left: 0;
+    right: 0;
+    background-color: #0a2f52;
+    border-bottom: 1px solid #0b3a63;
+    padding: 8px 0;
+    z-index: 99;
+  }
+
+  .top-nav-links.nav-open {
+    display: flex;
+  }
+
+  .top-nav-link {
+    padding: 12px 20px;
+    border-radius: 0;
+    font-size: 14px;
+  }
+
+  /* Logout inside the mobile dropdown */
+  .top-nav-logout-form {
+    display: block;
+    margin-left: 0;
+    padding: 8px 20px 4px;
+    border-top: 1px solid rgba(193, 216, 242, 0.15);
+    margin-top: 4px;
+  }
+
+  .top-nav-logout {
+    width: 100%;
+    text-align: left;
+    font-size: 14px;
+    padding: 8px 0;
+    border: none;
+    background: none;
+    color: #c1d8f2;
+  }
+
+  /* Tighter page padding */
+  .page-wrapper {
+    margin: 20px auto 40px auto;
+    padding: 0 12px;
+  }
+
+  .page-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  /* Tighter table cell padding */
+  .stats-table thead th {
+    padding: 10px 12px;
+  }
+
+  .stats-table tbody td {
+    padding: 8px 12px;
+  }
+
+  /* Scrollable column toggle bar — single row, no wrap */
+  .col-toggles {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    scrollbar-width: none; /* hide scrollbar on Firefox */
+  }
+
+  .col-toggles::-webkit-scrollbar {
+    display: none; /* hide scrollbar on Chrome/Safari */
+  }
+
+  /* Prevent toggle buttons from shrinking */
+  .col-toggle-btn,
+  .col-reset-btn,
+  .col-toggles-label {
+    flex-shrink: 0;
+  }
+}
+
