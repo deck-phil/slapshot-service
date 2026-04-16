@@ -31,6 +31,8 @@ DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "goon-lagoon.io",
+    "www.goon-lagoon.io",
     os.environ.get("RENDER_EXTERNAL_HOSTNAME", ""),
 ]
 
