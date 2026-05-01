@@ -1,3 +1,5 @@
+from datetime import timezone as dt_timezone
+
 from django.db.models import Sum, Count
 from django.shortcuts import render
 from django.utils import timezone
@@ -6,9 +8,12 @@ from stats.models import PlayerMatchStats, IngestionRun
 
 
 def season_stats_view(request):
-    now = timezone.now()
-    season_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-    season_label = now.strftime("%B %Y")
+    app_tz = timezone.get_default_timezone()
+
+    now_local = timezone.now().astimezone(app_tz)
+    season_start_local = now_local.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    season_start = season_start_local.astimezone(dt_timezone.utc)
+    season_label = now_local.strftime("%B %Y")
 
     qs = (
         PlayerMatchStats.objects
