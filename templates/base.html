@@ -18,6 +18,7 @@
     </button>
     <div class="top-nav-links" id="navLinks">
       <a href="{% url 'season_stats' %}" class="top-nav-link{% if request.resolver_match.url_name == 'season_stats' %} active{% endif %}">Season</a>
+      <a href="{% url 'seasons_index' %}" class="top-nav-link{% if request.resolver_match.url_name == 'seasons_index' or request.resolver_match.url_name == 'season_detail' %} active{% endif %}">Seasons</a>
       <a href="{% url 'player_totals' %}" class="top-nav-link{% if request.resolver_match.url_name == 'player_totals' %} active{% endif %}">All Time</a>
       <a href="{% url 'match_history' %}" class="top-nav-link{% if request.resolver_match.url_name == 'match_history' or request.resolver_match.url_name == 'player_match_history' %} active{% endif %}">Match History</a>
       {% if user.is_staff %}
@@ -144,7 +145,15 @@
 
     // ─── Column Toggle ───────────────────────────────────────────────────────────
     (function () {
-        const STORAGE_KEY = 'slapshot_col_prefs_' + window.location.pathname;
+        // Group all season pages (current + historic detail) under a single
+        // prefs key so column choices follow the user across seasons.
+        const SEASON_DETAIL_RE = /^\/seasons\/\d+-\d+\/?$/;
+        const path = window.location.pathname;
+        let storageScope = path;
+        if (path === '/' || SEASON_DETAIL_RE.test(path)) {
+            storageScope = '__season__';
+        }
+        const STORAGE_KEY = 'slapshot_col_prefs_' + storageScope;
 
         function getPrefs() {
             try {

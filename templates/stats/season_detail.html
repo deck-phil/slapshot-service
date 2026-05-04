@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}{{ season_label }} Season{% endblock %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-title">
+            {{ season_label|upper }}
+            {% if is_current %}
+                <span class="helper-text">(current)</span>
+            {% else %}
+                <span class="helper-text">(archived)</span>
+            {% endif %}
+        </div>
+
+        <div class="section-title">Season Stats</div>
+        <div class="section-subtitle helper-text">
+            Window: {{ season_start|date:"Y-m-d" }} – {{ season_end|date:"Y-m-d" }}<br>
+            {% if last_ingestion %}
+                Last updated on {{ last_ingestion.created_at }}
+            {% else %}
+                Not updated yet
+            {% endif %}
+            {% if is_current %}
+                <br>This season is in progress; stats may still change.
+            {% endif %}
+        </div>
+
+        <div class="section-subtitle">
+            <a href="{% url 'seasons_index' %}">← All seasons</a>
+            {% if previous_season %}
+                &nbsp;|&nbsp;
+                <a href="{% url 'season_detail' previous_season.year previous_season.month %}">
+                    ← {{ previous_season.label }}
+                </a>
+            {% endif %}
+            {% if next_season %}
+                &nbsp;|&nbsp;
+                <a href="{% url 'season_detail' next_season.year next_season.month %}">
+                    {{ next_season.label }} →
+                </a>
+            {% endif %}
+            {% if not is_current %}
+                &nbsp;|&nbsp;
+                <a href="{% url 'season_stats' %}">Current season</a>
+            {% endif %}
+        </div>
+
+        {% include "stats/_season_leaderboard.html" %}
+    </div>
+{% endblock %}
