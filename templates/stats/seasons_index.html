@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Seasons{% endblock %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-title">SEASONS</div>
+
+        <div class="section-title">All Seasons</div>
+        <div class="section-subtitle helper-text">
+            Each month with at least one match. Click a season to see its leaderboard.
+        </div>
+
+        {% if seasons %}
+            <div class="stats-table-wrapper">
+                <table class="stats-table js-sortable">
+                    <thead>
+                    <tr>
+                        <th data-sort-disabled>Season</th>
+                        <th data-sort-disabled>Window</th>
+                        <th class="text-end" data-type="number" data-default-sort="desc">Games</th>
+                        <th class="text-end" data-type="number">Players</th>
+                        <th data-sort-disabled></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for s in seasons %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'season_detail' s.year s.month %}">{{ s.label }}</a>
+                                {% if s.is_current %}<span class="helper-text">(current)</span>{% endif %}
+                            </td>
+                            <td>{{ s.start|date:"Y-m-d" }} – {{ s.end|date:"Y-m-d" }}</td>
+                            <td class="text-end">{{ s.games }}</td>
+                            <td class="text-end">{{ s.players }}</td>
+                            <td><a href="{% url 'season_detail' s.year s.month %}">View →</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="helper-text">
+                No seasons recorded yet. Once matches are ingested, archived months will appear here.
+            </p>
+            <p>
+                <a href="{% url 'season_stats' %}">View current Season</a>
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}
